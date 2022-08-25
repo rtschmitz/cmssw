@@ -117,8 +117,8 @@ bool HLTMuonRecHitClusterFilter::filter(edm::StreamID, edm::Event& iEvent, const
   auto const& rechitClusters = iEvent.get(cluster_token_);
 
   for (auto const& cluster : rechitClusters) {
-    auto passSizeCut = (cluster.size() >= min_Size_ && min_Size_ > 0) ||
-                       ((cluster.size() - cluster.nMB1()) >= min_SizeMinusMB1_ && min_SizeMinusMB1_ > 0);
+    auto passSizeCut = cluster.size() >= min_Size_ && ((min_Size_ > 0 && min_SizeMinusMB1_<= 0) ||
+                       ((cluster.size() - cluster.nMB1()) >= min_SizeMinusMB1_ && min_SizeMinusMB1_ > 0));
     if (not passSizeCut) {
       for (size_t i = 0; i < min_SizeRegionCutEtas_.size(); ++i) {
         if ((min_SizeRegionCutEtas_[i] < 0. || std::abs(cluster.eta()) > min_SizeRegionCutEtas_[i]) &&
