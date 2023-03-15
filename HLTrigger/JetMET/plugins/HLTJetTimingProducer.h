@@ -52,6 +52,7 @@ private:
   // Configurables for timing definition
   const double ecalCellEnergyThresh_;
   const double ecalCellTimeThresh_;
+  const double ecalCellTimeMax_;
   const double ecalCellTimeErrorThresh_;
   const double matchingRadius2_;
 };
@@ -68,6 +69,7 @@ HLTJetTimingProducer<T>::HLTJetTimingProducer(const edm::ParameterSet& iConfig)
       endcapJets_{iConfig.getParameter<bool>("endcapJets")},
       ecalCellEnergyThresh_{iConfig.getParameter<double>("ecalCellEnergyThresh")},
       ecalCellTimeThresh_{iConfig.getParameter<double>("ecalCellTimeThresh")},
+      ecalCellTimeMax_{iConfig.getParameter<double>("ecalCellTimeMax")},
       ecalCellTimeErrorThresh_{iConfig.getParameter<double>("ecalCellTimeErrorThresh")},
       matchingRadius2_{std::pow(iConfig.getParameter<double>("matchingRadius"), 2)} {
   produces<edm::ValueMap<float>>("");
@@ -93,6 +95,8 @@ void HLTJetTimingProducer<T>::jetTimeFromEcalCells(
     if (ecalRH.timeError() <= 0. || ecalRH.timeError() > ecalCellTimeErrorThresh_)
       continue;
     if (std::abs(ecalRH.time()) > ecalCellTimeThresh_)
+      continue;
+    if (std::abs(ecalRH.time()) < ecalCellTimeMax_)
       continue;
     auto const pos = caloGeometry.getPosition(ecalRH.detid());
     if (reco::deltaR2(jet, pos) > matchingRadius2_)
@@ -165,6 +169,7 @@ void HLTJetTimingProducer<T>::fillDescriptions(edm::ConfigurationDescriptions& d
   desc.add<bool>("endcapJets", false);
   desc.add<double>("ecalCellEnergyThresh", 0.5);
   desc.add<double>("ecalCellTimeThresh", 12.5);
+  desc.add<double>("ecalCellTimeMax", 50.);
   desc.add<double>("ecalCellTimeErrorThresh", 100.);
   desc.add<double>("matchingRadius", 0.4);
   desc.add<edm::InputTag>("ebRecHitsColl", edm::InputTag("hltEcalRecHit", "EcalRecHitsEB"));
