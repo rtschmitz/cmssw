@@ -3,6 +3,15 @@
 <use name="FWCore/Framework"/>
 <use name="FWCore/ParameterSet"/>
 <use name="L1Trigger/DemonstratorTools"/>
+
+<use name="FWCore/MessageLogger"/>
+<use name="FWCore/ServiceRegistry"/>
+
+<use name="CommonTools/UtilAlgos"/>
+
+
+<library file="GTTVertexFileComparator.cc" name="L1TriggerDemonstratorToolsPlugins"/>
+
 <!--<use name="hls/2019.08"/>-->
 <use name="hls"/>
 <flags EDM_PLUGIN="1"/>
